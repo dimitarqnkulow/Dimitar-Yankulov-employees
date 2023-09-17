@@ -71,7 +71,7 @@ function csvToArr(stringVal, splitter) {
   return formedArr;
 }
 function empWorkingTogether(project) {
-  let result;
+  let arrayOfPairs = [];
   const employees = project.projectEmps;
   //Dates in time
   employees.map((emp) => {
@@ -94,53 +94,51 @@ function empWorkingTogether(project) {
         if (currentEmp.dateTo >= comparingEmp.dateTo) {
           daysTogether =
             (comparingEmp.dateTo - currentEmp.dateFrom) / (1000 * 60 * 60 * 24);
-          if (!result) {
-            result = {
-              emp1Id: currentEmp.empId,
-              emp2Id: comparingEmp.empId,
-              projectId: currentEmp.projectId,
-              daysTogether,
-            };
-          } else if (result.daysTogether < daysTogether) {
-            result = {
-              emp1Id: currentEmp.empId,
-              emp2Id: comparingEmp.empId,
-              projectId: currentEmp.projectId,
-              daysTogether,
-            };
-          } else if (result.daysTogether >= daysTogether) {
-            continue;
-          }
+
+          arrayOfPairs.push({
+            emp1Id: currentEmp.empId,
+            emp2Id: comparingEmp.empId,
+            projectId: currentEmp.projectId,
+            daysTogether,
+          });
+        } else if (currentEmp.dateTo <= comparingEmp.dateTo) {
+          daysTogether =
+            (currentEmp.dateTo - currentEmp.dateFrom) / (1000 * 60 * 60 * 24);
+          arrayOfPairs.push({
+            emp1Id: currentEmp.empId,
+            emp2Id: comparingEmp.empId,
+            projectId: currentEmp.projectId,
+            daysTogether,
+          });
         }
       } else if (
         currentEmp.dateFrom <= comparingEmp.dateFrom &&
         comparingEmp.dateFrom < currentEmp.dateTo
       ) {
-        if (comparingEmp.dateTo < currentEmp.dateTo) {
+        if (comparingEmp.dateTo <= currentEmp.dateTo) {
           daysTogether =
             (comparingEmp.dateTo - comparingEmp.dateFrom) /
             (1000 * 60 * 60 * 24);
-
-          if (!result) {
-            result = {
-              emp1Id: currentEmp.empId,
-              emp2Id: comparingEmp.empId,
-              project: currentEmp.projectId,
-              daysTogether,
-            };
-          } else if (result.daysTogether < daysTogether) {
-            result = {
-              emp1Id: currentEmp.empId,
-              emp2Id: comparingEmp.empId,
-              projectId: currentEmp.projectId,
-              daysTogether,
-            };
-          } else if (result.daysTogether >= daysTogether) {
-            continue;
-          }
+          arrayOfPairs.push({
+            emp1Id: currentEmp.empId,
+            emp2Id: comparingEmp.empId,
+            projectId: currentEmp.projectId,
+            daysTogether,
+          });
+        } else if (comparingEmp.dateTo >= currentEmp.dateTo) {
+          daysTogether =
+            (currentEmp.dateTo - comparingEmp.dateFrom) / (1000 * 60 * 60 * 24);
+          arrayOfPairs.push({
+            emp1Id: currentEmp.empId,
+            emp2Id: comparingEmp.empId,
+            projectId: currentEmp.projectId,
+            daysTogether,
+          });
         }
       }
-      return result;
     }
+  }
+  if (arrayOfPairs.length > 0) {
+    return arrayOfPairs.sort((a, b) => a.daysTogether < b.daysTogether).shift();
   }
 }
