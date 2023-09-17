@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="/app.js" type="module"></script>
+  </head>
+  <body>
+    <div id="container">
+      <form id="csvForm">
+        <input type="file" accept=".csv" id="csvFile" />
+        <button type="submit">Submit</button>
+      </form>
+
+      <table id="table">
+        <thead>
+          <th>EmpID</th>
+          <th>ProjectID</th>
+          <th>DateFrom</th>
+          <th>DateTo</th>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </body>
+</html>
