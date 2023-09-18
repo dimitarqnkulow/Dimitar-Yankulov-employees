@@ -16,7 +16,7 @@ form.addEventListener("submit", function (e) {
       allEmp = csvToArr(csvData, ",");
 
       const tBody = document.getElementById("tableBody");
-
+      const finalParagraph = document.getElementById("longestPair");
       tBody.innerHTML = "";
       rawData.shift();
       rawData.forEach((row) => {
@@ -28,7 +28,7 @@ form.addEventListener("submit", function (e) {
           newCell.innerHTML = element;
         });
       });
-
+      //Separation of the employees by projectid
       let projects = {};
 
       for (const object of allEmp) {
@@ -46,11 +46,11 @@ form.addEventListener("submit", function (e) {
       for (let i = 0; i < projects.length; i++) {
         longestWorkingPairs.push(empWorkingTogether(projects[i]));
       }
-      const longestWorkingPair = longestWorkingPairs
+      let longestWorkingPair = longestWorkingPairs
         .sort((a, b) => a.daysTogether < b.daysTogether)
         .shift();
-
-      console.log(longestWorkingPair);
+      longestWorkingPair = Object.values(longestWorkingPair);
+      finalParagraph.innerHTML = `${longestWorkingPair.join(", ")}`;
     };
   } else {
     alert("Please select a file.");
@@ -70,6 +70,8 @@ function csvToArr(stringVal, splitter) {
   });
   return formedArr;
 }
+
+//Each Project longest pair
 function empWorkingTogether(project) {
   let arrayOfPairs = [];
   const employees = project.projectEmps;
@@ -92,8 +94,9 @@ function empWorkingTogether(project) {
         currentEmp.dateFrom < comparingEmp.dateTo
       ) {
         if (currentEmp.dateTo >= comparingEmp.dateTo) {
-          daysTogether =
-            (comparingEmp.dateTo - currentEmp.dateFrom) / (1000 * 60 * 60 * 24);
+          daysTogether = Math.floor(
+            (comparingEmp.dateTo - currentEmp.dateFrom) / (1000 * 60 * 60 * 24)
+          );
 
           arrayOfPairs.push({
             emp1Id: currentEmp.empId,
@@ -102,8 +105,9 @@ function empWorkingTogether(project) {
             daysTogether,
           });
         } else if (currentEmp.dateTo <= comparingEmp.dateTo) {
-          daysTogether =
-            (currentEmp.dateTo - currentEmp.dateFrom) / (1000 * 60 * 60 * 24);
+          daysTogether = Math.floor(
+            (currentEmp.dateTo - currentEmp.dateFrom) / (1000 * 60 * 60 * 24)
+          );
           arrayOfPairs.push({
             emp1Id: currentEmp.empId,
             emp2Id: comparingEmp.empId,
@@ -116,9 +120,10 @@ function empWorkingTogether(project) {
         comparingEmp.dateFrom < currentEmp.dateTo
       ) {
         if (comparingEmp.dateTo <= currentEmp.dateTo) {
-          daysTogether =
+          daysTogether = Math.floor(
             (comparingEmp.dateTo - comparingEmp.dateFrom) /
-            (1000 * 60 * 60 * 24);
+              (1000 * 60 * 60 * 24)
+          );
           arrayOfPairs.push({
             emp1Id: currentEmp.empId,
             emp2Id: comparingEmp.empId,
@@ -126,8 +131,9 @@ function empWorkingTogether(project) {
             daysTogether,
           });
         } else if (comparingEmp.dateTo >= currentEmp.dateTo) {
-          daysTogether =
-            (currentEmp.dateTo - comparingEmp.dateFrom) / (1000 * 60 * 60 * 24);
+          daysTogether = Math.floor(
+            (currentEmp.dateTo - comparingEmp.dateFrom) / (1000 * 60 * 60 * 24)
+          );
           arrayOfPairs.push({
             emp1Id: currentEmp.empId,
             emp2Id: comparingEmp.empId,
